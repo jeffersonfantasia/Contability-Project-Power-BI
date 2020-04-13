@@ -25,7 +25,7 @@ SELECT T.CODFILIAL,
          WHEN T.CODCOB = 'JUR' THEN
           VPAGO
          ELSE
-          T.TXPERM
+          (T.TXPERM + NVL(T.VLROUTROSACRESC,0) )
        END) AS VALOR,
        C.CODCONTAB,
        T.CODCOB,

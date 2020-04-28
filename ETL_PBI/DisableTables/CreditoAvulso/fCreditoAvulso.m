@@ -8,8 +8,8 @@ let
         Table.AddColumn(fCreditoAvulso1, "CONTADEBITO", each 
             if [TIPO] = "L" 
             then TxtClientes 
-            else if List.Contains( {"E", "D", "B"}, [TIPO] ) then TxtAdiantamentoCreditoAvulso 
-            else if [TIPO] = "M" then TxtDescontosConcedidos 
+            else if List.Contains( {"E", "B"}, [TIPO] ) then TxtAdiantamentoCreditoAvulso 
+            else if List.Contains( {"D", "M"}, [TIPO] )then TxtDescontosConcedidos 
             else null, type text),
 
     #"Conta Credito Adicionada" = 

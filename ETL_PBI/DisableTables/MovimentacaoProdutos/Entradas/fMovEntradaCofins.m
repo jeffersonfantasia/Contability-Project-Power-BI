@@ -10,13 +10,13 @@ let
 
     #"ContaDebito Adicionada" = 
         Table.AddColumn(#"ValorPositivo Filtradas" , "CONTADEBITO", each 
-        if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilRecolherCofins
-        else TxtContabilRecuperarCofins, type text),
+            if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilRecolherCofins
+            else TxtContabilRecuperarCofins, type text),
     
     #"ContaCredito Adicionada" = 
         Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each 
-        if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilVendaCofins
-        else if List.Contains( ListCfopEntradaTriangular, [CODFISCAL] ) then TxtContabilEstoqueContaOrdem
-        else TxtContabilEstoque, type text)
+            if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilVendaCofins
+            else if List.Contains( ListCfopEntradaTriangular, [CODFISCAL] ) then TxtContabilEstoqueContaOrdem
+            else TxtContabilEstoque, type text)
 in
     #"ContaCredito Adicionada"

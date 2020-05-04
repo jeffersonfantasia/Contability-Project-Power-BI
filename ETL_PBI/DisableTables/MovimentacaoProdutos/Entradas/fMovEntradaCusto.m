@@ -25,8 +25,8 @@ let
         
     #"ContaCredito Adicionada" = 
         Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each 
-        if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilCMV
-        else if ( List.Contains( ListCfopEntradaSimplesRemessa , [CODFISCAL] ) and [CODOPER] = "EI" ) then TxtContabilEstoqueEntInventario
-        else TxtContabilMaterialTransito, type text)
+            if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilCMV
+            else if ( List.Contains( ListCfopEntradaSimplesRemessa , [CODFISCAL] ) and [CODOPER] = "EI" ) then TxtContabilEstoqueEntInventario
+            else TxtContabilMaterialTransito, type text)
 in
     #"ContaCredito Adicionada"

@@ -1,9 +1,17 @@
 let
-    Fonte = 
-        Table.SelectColumns(fMovProdutoEnt, {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO", "VLTOTALCOFINS"}),
+    Fonte = PowerBI.Dataflows(null),
+    #"62685399-e81e-4c28-bb3e-37dd18427335" = Fonte{[workspaceId="62685399-e81e-4c28-bb3e-37dd18427335"]}[Data],
+    #"0a2a816b-7a5c-410b-ae9e-34c212f4f6b4" = #"62685399-e81e-4c28-bb3e-37dd18427335"{[dataflowId="0a2a816b-7a5c-410b-ae9e-34c212f4f6b4"]}[Data],
+    fMovProdutoEnt1 = #"0a2a816b-7a5c-410b-ae9e-34c212f4f6b4"{[entity="fMovProdutoEnt"]}[Data],
+    
+    #"Tipo Alterado" = 
+        Table.TransformColumnTypes(fMovProdutoEnt1,{{"DTMOV", type date}}),
+        
+    fMovProdutoEnt = 
+        Table.SelectColumns(#"Tipo Alterado", {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO", "VLTOTALCOFINS"}),
     
     #"Linhas Agrupadas" = 
-        Table.Group(Fonte, {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VLTOTALCOFINS]), type number}}),
+        Table.Group(fMovProdutoEnt, {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VLTOTALCOFINS]), type number}}),
     
     #"ValorPositivo Filtradas" = 
         Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0),
@@ -12,7 +20,7 @@ let
         Table.AddColumn(#"ValorPositivo Filtradas" , "CONTADEBITO", each 
             if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilRecolherCofins
             else TxtContabilRecuperarCofins, type text),
-    
+        
     #"ContaCredito Adicionada" = 
         Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each 
             if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilVendaCofins

@@ -1,48 +1,50 @@
 let
-    Fonte = 
-        Table.SelectColumns(fMovProdutoSaida, {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO", "VLTOTALNF"}),
+    Fonte = PowerBI.Dataflows(null),
+    #"62685399-e81e-4c28-bb3e-37dd18427335" = Fonte{[workspaceId="62685399-e81e-4c28-bb3e-37dd18427335"]}[Data],
+    #"11ca4578-1d92-41c1-84d9-c15a13e543f0" = #"62685399-e81e-4c28-bb3e-37dd18427335"{[dataflowId="11ca4578-1d92-41c1-84d9-c15a13e543f0"]}[Data],
+    fMovProdutoSaida1 = #"11ca4578-1d92-41c1-84d9-c15a13e543f0"{[entity="fMovProdutoSaida"]}[Data],
+    
+    #"Tipo Alterado" = 
+        Table.TransformColumnTypes(fMovProdutoSaida1,{{"DTMOV", type date}}),
+
+    fMovProdutoSaida =  
+        Table.SelectColumns(#"Tipo Alterado", {"DTMOV", "CODFILIAL", "CODFISCAL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO", "VLTOTALNF"}),
     
     #"Linhas Agrupadas" = 
-        Table.Group(Fonte, {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VLTOTALNF]), type number}}),
+        Table.Group(fMovProdutoSaida, {"DTMOV", "CODFILIAL", "CODFISCAL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VLTOTALNF]), type number}}),
     
     ListCfopFiltro = 
-        List.Buffer(
-            List.Union(
-                {
-                    ListCfopSaidaBonificada ,
-                    ListCfopSaidaRemessaContaOrdem,
-                    ListCfopSaidaDesconsiderar
-                }
-            )
+        List.Combine(
+            {
+                ListCfopSaidaBonificada ,
+                ListCfopSaidaRemessaContaOrdem,
+                ListCfopSaidaDesconsiderar
+            }
         ),
     
     #"ValorPositivo Filtradas" = 
         Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0 and not List.Contains( ListCfopFiltro, [CODFISCAL] ) ),
 
-    ListVendaClientes = 
-        List.Buffer(
-            List.Union(
-                {
-                    ListCfopSaidaVendaNormal,
-                    ListCfopSaidaVendaConsignada,
-                    ListCfopSaidaFatEntFut,
-                    ListCfopSaidaFatContaOrdem,
-                    ListCfopSaidaVendaTriangular
-                }
-            )
+    ListVendaClientes =
+        List.Combine(
+            {
+                ListCfopSaidaVendaNormal,
+                ListCfopSaidaVendaConsignada,
+                ListCfopSaidaFatEntFut,
+                ListCfopSaidaFatContaOrdem,
+                ListCfopSaidaVendaTriangular
+            }
         ),
 
     ListEstoque = 
-        List.Buffer(
-            List.Union(
-                {
-                    ListCfopSaidaDevolucaoConsignado,
-                    ListCfopSaidaDevolucao,
-                    ListCfopSaidaTransferencia,
-                    ListCfopSaidaPerdaMercadoria,
-                    ListCfopSaidaRemessaEntFut
-                }
-            )
+        List.Combine(
+            {
+                ListCfopSaidaDevolucaoConsignado,
+                ListCfopSaidaDevolucao,
+                ListCfopSaidaTransferencia,
+                ListCfopSaidaPerdaMercadoria,
+                ListCfopSaidaRemessaEntFut
+            }
         ),
 
     #"ContaDebito Adicionada" = 

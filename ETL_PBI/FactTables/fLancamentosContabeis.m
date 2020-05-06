@@ -1,6 +1,21 @@
 let
     Fonte = 
-        Table.Combine({fLancAdiantamentoFornec, fLancAdiantFornecBaixa, fAdiantamentoCliente, fAdiantamentoClienteBaixado, fContasReceberDesdCartao, fContasReceberBaixado, fContasReceberDupManual, fCreditoAvulso, fDevCliReceitaPag, fDevCliDescDuplicata, fDevCliCreditoGerado, fDevFornecPagto, fLancamentosPagos, fLancamentosAjuste}),
+        Table.Combine({
+            fLancAdiantamentoFornec, 
+            fLancAdiantFornecBaixa, 
+            fAdiantamentoCliente, 
+            fAdiantamentoClienteBaixado, 
+            fContasReceberDesdCartao, 
+            fContasReceberBaixado, 
+            fContasReceberDupManual, 
+            fCreditoAvulso, 
+            fDevCliReceitaPag, 
+            fDevCliDescDuplicata, 
+            fDevCliCreditoGerado, 
+            fDevFornecPagto, 
+            fLancamentosPagos, 
+            fLancamentosAjuste
+        }),
 
     #"Debito Contabil Adicionada" = 
         Table.CombineColumns(    
@@ -21,9 +36,13 @@ let
                 ),"CONTACREDITO", "CONTACREDITODUP"
             ),{"CONTA_CREDITO", "CONTACREDITODUP"},Combiner.CombineTextByDelimiter("-", QuoteStyle.None),"CONTA_CREDITO"
         ),
-    
+        
     #"Unpivot Conta Contabil" = 
-        Table.UnpivotOtherColumns(#"Credito Contabil Adicionada", {"CODFILIAL", "RECNUM", "VALOR", "DATA", "CODFORNEC", "TIPOPARCEIRO", "HISTORICO", "NUMTRANS", "CODCONTA", "CODCRED", "CODIGO", "TIPO", "CODCOB", "NUMTRANSVENDA", "CODLANC", "CODUSUR", "NUMNOTA_DEV", "CONTADEBITO", "CONTACREDITO"}, "TIPOCONTA", "CONTACONTABIL"),
+        Table.UnpivotOtherColumns(
+            #"Credito Contabil Adicionada", 
+            {"CODFILIAL", "RECNUM", "VALOR", "DATA", "CODFORNEC", "TIPOPARCEIRO", "HISTORICO", "NUMTRANS", "CODCONTA", "CODCRED", "CODIGO", "TIPO", "CODCOB", "NUMTRANSVENDA", "CODLANC", "CODUSUR", "NUMNOTA_DEV", "CONTADEBITO", "CONTACREDITO"}, 
+            "TIPOCONTA", "CONTACONTABIL"
+        ),
     
     #"fMovBancosTransferencia Acrescentada" = 
         Table.Combine({#"Unpivot Conta Contabil", fMovBancosTransferencia})

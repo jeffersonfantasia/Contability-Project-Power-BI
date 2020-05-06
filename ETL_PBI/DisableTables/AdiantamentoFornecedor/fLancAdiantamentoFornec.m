@@ -6,13 +6,13 @@ let
     
     #"Conta Debito Adicionada" = Table.AddColumn(fLancAdiantamentoFornec1, "CONTADEBITO", each 
         if [VPAGO] > 0 
-        then TxtAdiantamentoFornecedor 
+        then fnTextAccount("txtAdiantamentoFornecedor") 
         else [CODCONTABILBANCO], type text),
     
     #"Conta Credito Adicionada" = Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", each 
         if [VPAGO] > 0 
         then [CODCONTABILBANCO] 
-        else TxtAdiantamentoFornecedor, type text),
+        else fnTextAccount("txtAdiantamentoFornecedor"), type text),
     
     #"Outras Colunas Removidas" = 
         Table.SelectColumns(#"Conta Credito Adicionada",{"CODFILIAL", "RECNUM", "VALOR", "DATA", "CODFORNEC", "TIPOPARCEIRO", "HISTORICO", "NUMTRANS", "CONTADEBITO", "CONTACREDITO", "CODCONTA"}),

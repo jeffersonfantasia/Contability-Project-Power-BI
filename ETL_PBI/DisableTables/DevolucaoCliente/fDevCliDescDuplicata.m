@@ -5,10 +5,10 @@ let
     fDevCliDescDuplicata1 = #"35b82b06-95a8-40f5-9492-c72ed37562d7"{[entity="fDevCliDescDuplicata"]}[Data],
     
     #"Valor Substituído" = 
-        Table.ReplaceValue(fDevCliDescDuplicata1,"",TxtClientes,Replacer.ReplaceValue,{"CODCONTAB_CLI"}),
+        Table.ReplaceValue(fDevCliDescDuplicata1,"", fnTextAccount("txtClientes"), Replacer.ReplaceValue, {"CODCONTAB_CLI"}),
     
     #"Conta Debito Adicionada" = 
-        Table.AddColumn(#"Valor Substituído", "CONTADEBITO", each TxtDevolucaoPagar, type text),
+        Table.AddColumn(#"Valor Substituído", "CONTADEBITO", each fnTextAccount("txtDevolucaoPagar"), type text),
     
     #"Conta Credito Renomeadas" = 
         Table.RenameColumns(#"Conta Debito Adicionada",{{"CODCONTAB_CLI", "CONTACREDITO"}}),

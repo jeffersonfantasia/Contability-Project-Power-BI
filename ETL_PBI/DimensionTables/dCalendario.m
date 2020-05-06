@@ -5,7 +5,7 @@ let
     dCalendario1 = #"3198aef9-92a9-484a-8f1b-9f02ce2b9591"{[entity="dCalendario"]}[Data],
     
     #"Outras Colunas Removidas" = 
-        Table.SelectColumns(dCalendario1,{"Data Base", "Ano", "Nº Mês", "Mês", "Trimestre"}),
+        Table.SelectColumns(dCalendario1,{"Data Base", "Ano", "Nº Mês", "Mês", "Trimestre", "Nº Mês-Ano", "Mês Abrev-Ano"}),
     
     #"Extrato Bancario Adicionada" = 
         Table.AddColumn(#"Outras Colunas Removidas", "Extrato Bancario", each "EXTRATO BANCARIO", type text)

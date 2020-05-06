@@ -21,7 +21,7 @@ let
         Table.CombineColumns(    
             Table.DuplicateColumn(
                 Table.ExpandListColumn( 
-                    Table.AddColumn(Fonte, "CONTA_DEBITO", each List.ReplaceMatchingItems({[CODFILIAL]}, ListTransformeFilial) 
+                    Table.AddColumn(Fonte, "CONTA_DEBITO", each fnTransformFilial([CODFILIAL])
                     ),"CONTA_DEBITO"
                 ), "CONTADEBITO", "CONTADEBITODUP"
             ),{"CONTA_DEBITO", "CONTADEBITODUP"},Combiner.CombineTextByDelimiter("-", QuoteStyle.None),"CONTA_DEBITO"
@@ -31,7 +31,7 @@ let
         Table.CombineColumns(
             Table.DuplicateColumn(
                 Table.ExpandListColumn( 
-                    Table.AddColumn(#"Debito Contabil Adicionada", "CONTA_CREDITO", each List.ReplaceMatchingItems({[CODFILIAL]}, ListTransformeFilial) 
+                    Table.AddColumn(#"Debito Contabil Adicionada", "CONTA_CREDITO", each fnTransformFilial([CODFILIAL])
                     ),"CONTA_CREDITO"
                 ),"CONTACREDITO", "CONTACREDITODUP"
             ),{"CONTA_CREDITO", "CONTACREDITODUP"},Combiner.CombineTextByDelimiter("-", QuoteStyle.None),"CONTA_CREDITO"

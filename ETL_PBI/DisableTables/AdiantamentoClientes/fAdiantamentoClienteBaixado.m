@@ -5,17 +5,17 @@ let
     fAdiantamentoClienteBaixado1 = #"ebdd4702-34a6-4f47-9e84-b502a9a41ff9"{[entity="fAdiantamentoClienteBaixado"]}[Data],
     
     #"Valor Substituído" = 
-        Table.ReplaceValue(fAdiantamentoClienteBaixado1,"",TxtClientes,Replacer.ReplaceValue,{"CODCONTAB"}),
+        Table.ReplaceValue(fAdiantamentoClienteBaixado1,"",fnTextAccount("txtClientes"),Replacer.ReplaceValue,{"CODCONTAB"}),
     
     #"Conta Debito Adicionada" = 
-        Table.AddColumn(#"Valor Substituído", "CONTADEBITO", each TxtAdiantamentoCliente, type text),
+        Table.AddColumn(#"Valor Substituído", "CONTADEBITO", each fnTextAccount("txtAdiantamentoCliente"), type text),
     
     #"Conta Credito Adicionada" = 
         Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", each 
             if [TIPO] = "D" 
             then [CODCONTAB] 
             else if [TIPO] = "R" 
-                then TxtOutrasReceitasFinanceiras 
+                then fnTextAccount("txtOutrasReceitasFinanceiras") 
                 else null, type text),
     
     #"Outras Colunas Removidas" = 

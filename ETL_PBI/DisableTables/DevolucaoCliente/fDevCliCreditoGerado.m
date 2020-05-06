@@ -5,15 +5,15 @@ let
     fDevCliCreditoGerado1 = #"24e3bfb3-12d1-48cb-af3f-dcee84651121"{[entity="fDevCliCreditoGerado"]}[Data],
     
     #"Valor Substituído" = 
-        Table.ReplaceValue(fDevCliCreditoGerado1,"",TxtClientes,Replacer.ReplaceValue,{"CODCONTAB_CLI"}),
+        Table.ReplaceValue(fDevCliCreditoGerado1, "", fnTextAccount("txtClientes"), Replacer.ReplaceValue, {"CODCONTAB_CLI"}),
     
     #"Conta Debito Adicionada" = 
-        Table.AddColumn(#"Valor Substituído", "CONTADEBITO", each TxtDevolucaoPagar, type text),
+        Table.AddColumn(#"Valor Substituído", "CONTADEBITO", each fnTextAccount("txtDevolucaoPagar"), type text),
     
     #"Conta Credito Adicionada" = 
         Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", each 
             if [TIPO] = "R" 
-            then TxtOutrasReceitasOperacionais 
+            then fnTextAccount("txtOutrasReceitasOperacionais") 
             else if [TIPO] ="C" then [CODCONTAB_CLI] 
             else if [TIPO] = "D" then [CODCONTAB_BANCO] 
             else null, type text),

@@ -8,11 +8,11 @@ let
         Table.AddColumn(fAdiantamentoCliente1, "CONTADEBITO", each 
             if [VLPAGO] > 0 
             then [CODCONTABILBANCO] 
-            else TxtAdiantamentoCliente, type text),
+            else fnTextAccount("txtAdiantamentoCliente"), type text),
     
     #"Conta Credito Adicionada" = Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", 
         each if [VLPAGO] > 0 
-        then TxtAdiantamentoCliente 
+        then fnTextAccount("txtAdiantamentoCliente")
         else [CODCONTABILBANCO], type text),
     
     #"Outras Colunas Removidas" = 

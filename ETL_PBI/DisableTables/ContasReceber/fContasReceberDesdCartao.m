@@ -8,7 +8,7 @@ let
         Table.RenameColumns(fContasReceberDesdCartao1,{{"CODCONTAB", "CONTADEBITO"}}),
     
     #"Conta Credito Adicionada" = 
-        Table.AddColumn(#"Conta Debito Renomeadas", "CONTACREDITO", each TxtClientes, type text),
+        Table.AddColumn(#"Conta Debito Renomeadas", "CONTACREDITO", each fnTextAccount("txtClientes"), type text),
     
     #"Outras Colunas Removidas" = 
         Table.SelectColumns(#"Conta Credito Adicionada",{"CODFILIAL", "DATA", "CODCOB", "NUMTRANSVENDA", "VALOR", "HISTORICO", "CONTADEBITO", "CONTACREDITO"}),

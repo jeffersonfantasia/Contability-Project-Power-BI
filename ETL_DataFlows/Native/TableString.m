@@ -1,0 +1,57 @@
+let
+  Fonte = #table(
+        type table [Name = text, Value = text ],
+        {
+          {"txtAdiantamentoCliente", "473"},
+          {"txtAdiantamentoCreditoAvulso", "189"},
+          {"txtAdiantamentoFornecedor", "223"},
+          {"txtClientes", "200"},
+          {"txtDescontosConcedidos", "773"},
+          {"txtDescontosObtidos", "827"},
+          {"txtDevolucaoPagar", "384"},
+          {"txtDevolucaoReceber", "225"},
+          {"txtEmprestimoTerceiros", "1034"},
+          {"txtFornecedorSemConta", "99999"},
+          {"txtJurosPagos", "777"},
+          {"txtJurosRecebidos", "826"},
+          {"txtOutrasReceitasFinanceiras", "828"},
+          {"txtOutrasReceitasOperacionais", "837"},
+          {"txtPrejuizosClientes", "725"},
+          {"txtRestituirIR", "237"},
+          {"txtTaxasCartao", "775"},
+          {"txtContabilCMV", "848"},
+          {"txtContabilConsertoAtivo", "65350"},
+          {"txtContabilConsertoPassivo", "65359"},
+          {"txtContabilDemonstracaoAtivo", "65714"},
+          {"txtContabilDemonstracaoPassivo", "65715"},
+          {"txtContabilDevolucao", "813"},
+          {"txtContabilEntradaBonificacao", "838"},
+          {"txtContabilEstoque", "258"},
+          {"txtContabilEstoqueConsignado", "99997"},
+          {"txtContabilEstoqueContaOrdem", "99998"},
+          {"txtContabilEstoqueEntInventario", "840"},
+          {"txtContabilFaturamento", "806"},
+          {"txtContabilMaterialTransito", "259"},
+          {"txtContabilRecolherCofins", "413"},
+          {"txtContabilRecolherPartilha", "407"},
+          {"txtContabilRecolherPis", "411"},
+          {"txtContabilRecolherST", "426"},
+          {"txtContabilRecuperarCofins", "242"},
+          {"txtContabilRecuperarICMS", "235"},
+          {"txtContabilRecuperarPis", "240"},
+          {"txtContabilSimplesRemessaAtivo", "65351"},
+          {"txtContabilSimplesRemessaPassivo", "65356"},
+          {"txtContabilTransferencia", "65707"},
+          {"txtContabilVendaBonificacao", "799"},
+          {"txtContabilVendaCofins", "823"},
+          {"txtContabilVendaICMS", "406"},
+          {"txtContabilVendaPis", "822"},
+          {"txtContabilVendaST", "935"},
+          {"txtPerdaMercadoria", "753"}
+        }
+      ),
+  
+  #"Coluna dinamizada" = 
+    Table.Pivot(Table.TransformColumnTypes(Fonte, {{"Name", type text}}), List.Distinct(Table.TransformColumnTypes(Fonte, {{"Name", type text}})[Name]), "Name", "Value")
+in
+  #"Coluna dinamizada"

@@ -8,13 +8,13 @@ let
         Table.NestedJoin(fLancAdiantFornecBaixa1, {"CODFILIAL", "CODFORNEC"}, dContabilFilialFornec, {"CODFILIAL", "CODFORNEC"}, "dContabilFilialFornec", JoinKind.LeftOuter),
     
     #"Conta Debito Expandido" = 
-        Table.ReplaceValue(Table.ExpandTableColumn(#"Consultas Mescladas", "dContabilFilialFornec", {"CODCONTAB"}, {"CONTADEBITO"}),null,TxtFornecedorSemConta,Replacer.ReplaceValue,{"CONTADEBITO"}),
+        Table.ReplaceValue(Table.ExpandTableColumn(#"Consultas Mescladas", "dContabilFilialFornec", {"CODCONTAB"}, {"CONTADEBITO"}), null, fnTextAccount("txtFornecedorSemConta"), Replacer.ReplaceValue,{"CONTADEBITO"}),
     
     #"Conta Credito Adicionada" = 
         Table.AddColumn(#"Conta Debito Expandido", "CONTACREDITO", each 
             if [VPAGO] > 0 
-            then TxtAdiantamentoFornecedor 
-            else TxtDescontosObtidos, type text),
+            then fnTextAccount("txtAdiantamentoFornecedor") 
+            else fnTextAccount("txtDescontosObtidos"), type text),
     
     #"Outras Colunas Removidas" = 
         Table.SelectColumns(#"Conta Credito Adicionada",{"CODFILIAL", "RECNUM", "VALOR", "DATA", "CODCONTA", "CODFORNEC", "TIPOPARCEIRO", "HISTORICO", "CONTADEBITO", "CONTACREDITO"}),

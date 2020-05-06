@@ -5,27 +5,27 @@ let
     fContasReceberBaixado1 = #"8039f4ff-a199-4f5f-8040-21f6488872c5"{[entity="fContasReceberBaixado"]}[Data],
     
     #"Valor Substituído" = 
-        Table.ReplaceValue(fContasReceberBaixado1,"",TxtClientes,Replacer.ReplaceValue,{"CODCONTAB"}),
+        Table.ReplaceValue(fContasReceberBaixado1, "", fnTextAccount("txtClientes"), Replacer.ReplaceValue, {"CODCONTAB"}),
     
     #"Conta Debito Adicionada" = 
         Table.AddColumn(#"Valor Substituído", "CONTADEBITO", each 
             if [TIPO] = "B" then 
                 if [CODCOB] = "DESC" 
-                then TxtDescontosConcedidos 
+                then fnTextAccount("txtDescontosConcedidos") 
                 else [CODCONTABILBANCO]
             else if [TIPO] = "J" then [CODCONTABILBANCO]
-            else if [TIPO] = "P" then TxtPrejuizosClientes 
-            else if [TIPO] = "T" then TxtTaxasCartao 
-            else if [TIPO] = "D" then TxtDescontosConcedidos 
+            else if [TIPO] = "P" then fnTextAccount("txtPrejuizosClientes") 
+            else if [TIPO] = "T" then fnTextAccount("txtTaxasCartao") 
+            else if [TIPO] = "D" then fnTextAccount("txtDescontosConcedidos") 
             else null, type text),
     
     #"Conta Credito Adicionada" = 
         Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", each 
             if [TIPO] = "B" then 
                 if [CODCOB] = "JUR" 
-                then TxtJurosRecebidos 
+                then fnTextAccount("txtJurosRecebidos") 
                 else [CODCONTAB] 
-            else if [TIPO] = "J" then TxtJurosRecebidos 
+            else if [TIPO] = "J" then fnTextAccount("txtJurosRecebidos") 
             else if List.Contains( {"P","T","D"},[TIPO] ) then [CODCONTAB] 
             else null, type text),
     

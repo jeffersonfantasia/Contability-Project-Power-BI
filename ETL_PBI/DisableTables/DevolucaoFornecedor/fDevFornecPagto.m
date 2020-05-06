@@ -10,18 +10,18 @@ let
     #"dContabilFilialFornec Expandido" = 
         Table.ReplaceValue(
             Table.ExpandTableColumn(#"Consultas Mescladas", "dContabilFilialFornec", {"CODCONTAB"}, {"CODCONTAB"}
-            ),null,TxtFornecedorSemConta,Replacer.ReplaceValue,{"CODCONTAB"}
+            ), null, fnTextAccount("txtFornecedorSemConta"), Replacer.ReplaceValue,{"CODCONTAB"}
         ),
     
     #"Conta Debito Adicionada" = 
         Table.AddColumn(#"dContabilFilialFornec Expandido", "CONTADEBITO", each
             if [TIPO] = "D" then [CODCONTAB_BANCO]
-            else if [TIPO] = "F" then [CODCONTAB] 
-            else if [TIPO] = "P" then TxtPrejuizosClientes 
+            else if [TIPO] = "F" then [CODCONTAB]
+            else if [TIPO] = "P" then fnTextAccount("txtPrejuizosClientes") 
             else null, type text),
     
     #"Conta Credito Adicionada" = 
-        Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", each TxtDevolucaoReceber, type text),
+        Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", each fnTextAccount("txtDevolucaoReceber"), type text),
     
     #"Outras Colunas Removidas" = 
         Table.SelectColumns(#"Conta Credito Adicionada",{"CODFILIAL", "RECNUM", "DATA", "VALOR", "TIPO", "HISTORICO", "CONTADEBITO", "CONTACREDITO"}),

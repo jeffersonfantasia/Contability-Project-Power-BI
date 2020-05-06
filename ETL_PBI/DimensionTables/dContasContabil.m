@@ -1,4 +1,4 @@
 let
-    Fonte = Table.Combine({dBalancete, dFornecedoresBalancete})
+    Fonte = Table.Combine( {dBalancete, dFornecedoresBalancete} )
 in
     Fonte

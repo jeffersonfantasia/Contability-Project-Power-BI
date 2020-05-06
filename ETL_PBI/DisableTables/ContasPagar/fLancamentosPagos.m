@@ -16,7 +16,7 @@ let
     #"Conta Fornecedor Expandido" = 
         Table.ReplaceValue( 
             Table.ExpandTableColumn(#"dContabilFilialFornec Mescladas", "dContabilFilialFornec", {"CODCONTAB"}, {"CODCONTAB_FORNEC"}
-            ),null,TxtFornecedorSemConta,Replacer.ReplaceValue,{"CODCONTAB_FORNEC"}
+            ), null, fnTextAccount("txtFornecedorSemConta"), Replacer.ReplaceValue, {"CODCONTAB_FORNEC"}
         ),
     
     #"dContasGerenciais Mescladas" = 
@@ -28,9 +28,9 @@ let
     #"Conta Debito Adicionada" = 
         Table.AddColumn(#"Conta Contabil Expandido", "CONTADEBITO", each 
             if [TIPO] = "F" then 
-                if ( List.Contains( ListGruposDesconsiderar, [GRUPOCONTA] ) and not List.Contains( ListContasConsiderar, [CODCONTA] ) ) 
-                    or List.Contains( ListContasDesconsiderar, [CODCONTA] ) 
-                    or List.Contains( ListFornecedorDesconsiderar, [CODFORNEC] )
+                if ( List.Contains( fnListCfop("listGruposDesconsiderar"), [GRUPOCONTA] ) and not List.Contains( fnListCfop("listContasConsiderar"), [CODCONTA] ) ) 
+                    or List.Contains( fnListCfop("listContasDesconsiderar"), [CODCONTA] ) 
+                    or List.Contains( listFornecedorDesconsiderar, [CODFORNEC] )
                 then 
                     if [VPAGO] > 0
                     then [CODCONTAB_CONTA]
@@ -42,18 +42,18 @@ let
             
             else if [TIPO] = "O" then
                 if [VPAGO] > 0 then
-                    if ( List.Contains( ListEmpresaJCBrothers, [CODFILIAL] ) and [CODCONTA] = 620110 )
-                    then TxtRestituirIR
+                    if ( List.Contains( fnListCfop("listEmpresaJCBrothers"), [CODFILIAL] ) and [CODCONTA] = 620110 )
+                    then fnTextAccount("txtRestituirIR")
                     else [CODCONTAB_CONTA]
                 else [CODCONTABILBANCO]
             
-            else if [TIPO] = "J" then TxtJurosPagos
+            else if [TIPO] = "J" then fnTextAccount("txtJurosPagos")
             
             else if [TIPO] = "I" then [CODCONTAB_IMPOSTO]
 
             else if [TIPO] = "MI" then [CODCONTABCLIENTE]
             
-            else if [TIPO] = "EB" then TxtEmprestimoTerceiros
+            else if [TIPO] = "EB" then fnTextAccount("txtEmprestimoTerceiros")
 
             else if [TIPO] = "MT" then 
                 if [VPAGO] > 0 
@@ -76,18 +76,18 @@ let
                 if [VPAGO] > 0
                 then [CODCONTABILBANCO]
                 else if [CODCONTAB_CONTA] = "" 
-                    then TxtOutrasReceitasFinanceiras 
+                    then fnTextAccount("txtOutrasReceitasFinanceiras") 
                     else [CODCONTAB_CONTA] 
 
-            else if [TIPO] = "D" then TxtDescontosObtidos
+            else if [TIPO] = "D" then fnTextAccount("txtDescontosObtidos")
         
             else if [TIPO] = "MI" then [CODCONTAB_FORNEC]
 
             else if [TIPO] = "C" then [CODCONTAB_CONTA]
 
-            else if [TIPO] = "EC" then TxtEmprestimoTerceiros
+            else if [TIPO] = "EC" then fnTextAccount("txtEmprestimoTerceiros")
 
-            else if [TIPO] = "V" then TxtOutrasReceitasFinanceiras
+            else if [TIPO] = "V" then fnTextAccount("txtOutrasReceitasFinanceiras")
             
             else if List.Contains( {"J","I","EB"}, [TIPO])
                 then [CODCONTABILBANCO]
@@ -100,7 +100,7 @@ let
     #"Data Adicionada" = 
         Table.AddColumn(#"Conta Credito Adicionada", "DATA", each 
             if [TIPO] = "O" then
-                if List.Contains( ListGruposCompensacao, [GRUPOCONTA] ) 
+                if List.Contains( fnListCfop("listGruposCompensacao"), [GRUPOCONTA] ) 
                 then [DTCOMPENSACAO]
                 else [DTPAGTO]
 

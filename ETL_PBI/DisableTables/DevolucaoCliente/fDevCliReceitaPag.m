@@ -5,13 +5,13 @@ let
     fDevCliReceitaPag1 = #"56d76aa7-c1b1-4cf7-9c3a-562ed96b9db5"{[entity="fDevCliReceitaPag"]}[Data],
     
     #"Conta Debito Adicionada" = 
-        Table.AddColumn(fDevCliReceitaPag1, "CONTADEBITO", each TxtDevolucaoPagar, type text),
+        Table.AddColumn(fDevCliReceitaPag1, "CONTADEBITO", each fnTextAccount("txtDevolucaoPagar"), type text),
     
     #"Conta Credito Adicionada" = 
         Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", each 
             if [TIPO] = "D" 
             then [CODCONTAB_BANCO]
-            else if [TIPO] = "R" then TxtOutrasReceitasOperacionais 
+            else if [TIPO] = "R" then fnTextAccount("txtOutrasReceitasOperacionais") 
             else null, type text),
     
     #"Outras Colunas Removidas" = 

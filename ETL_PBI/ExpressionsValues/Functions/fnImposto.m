@@ -1,4 +1,4 @@
-(Column) =>
+(ColumnName) as list =>
 let 
   TxtImpostoINSS = "420",
   TxtImpostoISS = "410",
@@ -18,4 +18,4 @@ let
       }
     )  
 in
-    List.ReplaceMatchingItems({Column}, Lista)
+    List.ReplaceMatchingItems( {ColumnName}, Lista )

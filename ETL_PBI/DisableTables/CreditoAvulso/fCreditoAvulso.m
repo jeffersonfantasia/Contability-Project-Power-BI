@@ -7,16 +7,16 @@ let
     #"Conta Debito Adicionada" = 
         Table.AddColumn(fCreditoAvulso1, "CONTADEBITO", each 
             if [TIPO] = "L" 
-            then TxtClientes 
-            else if List.Contains( {"E", "B"}, [TIPO] ) then TxtAdiantamentoCreditoAvulso 
-            else if List.Contains( {"D", "M"}, [TIPO] )then TxtDescontosConcedidos 
+            then fnTextAccount("txtClientes") 
+            else if List.Contains( {"E", "B"}, [TIPO] ) then fnTextAccount("txtAdiantamentoCreditoAvulso") 
+            else if List.Contains( {"D", "M"}, [TIPO] )then fnTextAccount("txtDescontosConcedidos") 
             else null, type text),
 
     #"Conta Credito Adicionada" = 
         Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", each 
             if [TIPO] = "L" 
-            then TxtAdiantamentoCreditoAvulso 
-            else if List.Contains( {"E", "D", "B"}, [TIPO] ) then TxtClientes 
+            then fnTextAccount("txtAdiantamentoCreditoAvulso") 
+            else if List.Contains( {"E", "D", "B"}, [TIPO] ) then fnTextAccount("txtClientes") 
             else if [TIPO] = "M" then Text.From( [CODCONTA] ) 
             else null, type text),
     

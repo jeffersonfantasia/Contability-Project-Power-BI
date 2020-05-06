@@ -8,21 +8,21 @@ let
         Table.AddColumn(fMovBancosTransferencia1, "CONTADEBITO", each 
             if List.Contains( {"G", "EB"}, [TIPO] ) 
             then [CODCONTABILDEB] 
-            else if [TIPO] = "EC" then TxtEmprestimoTerceiros 
+            else if [TIPO] = "EC" then fnTextAccount("txtEmprestimoTerceiros") 
             else null, type text), 
 
     #"Conta Credito Adicionada" = 
         Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", each 
             if List.Contains( {"G", "EC"}, [TIPO] ) 
             then [CODCONTABILCRED]
-            else if [TIPO] = "EB" then TxtEmprestimoTerceiros 
+            else if [TIPO] = "EB" then fnTextAccount("txtEmprestimoTerceiros")
             else null, type text),
 
     #"Debito Contabil Adicionada" = 
         Table.CombineColumns(    
             Table.DuplicateColumn(
                 Table.ExpandListColumn( 
-                    Table.AddColumn(#"Conta Credito Adicionada", "CONTA_DEBITO", each List.ReplaceMatchingItems({[CODFILIALDEB]}, ListTransformeFilial) 
+                    Table.AddColumn(#"Conta Credito Adicionada", "CONTA_DEBITO", each fnTransformFilial([CODFILIALDEB])
                     ),"CONTA_DEBITO"
                 ), "CONTADEBITO", "CONTADEBITODUP"
             ),{"CONTA_DEBITO", "CONTADEBITODUP"},Combiner.CombineTextByDelimiter("-", QuoteStyle.None),"CONTA_DEBITO"
@@ -32,14 +32,18 @@ let
         Table.CombineColumns(
             Table.DuplicateColumn(
                 Table.ExpandListColumn( 
-                    Table.AddColumn(#"Debito Contabil Adicionada", "CONTA_CREDITO", each List.ReplaceMatchingItems({[CODFILIALCRED]}, ListTransformeFilial) 
+                    Table.AddColumn(#"Debito Contabil Adicionada", "CONTA_CREDITO", each fnTransformFilial([CODFILIALCRED]) 
                     ),"CONTA_CREDITO"
                 ),"CONTACREDITO", "CONTACREDITODUP"
             ),{"CONTA_CREDITO", "CONTACREDITODUP"},Combiner.CombineTextByDelimiter("-", QuoteStyle.None),"CONTA_CREDITO"
         ),
     
     #"Unpivot Conta Contabil" = 
-        Table.UnpivotOtherColumns(#"Credito Contabil Adicionada", {"DATA", "NUMTRANS", "CODFILIALCRED", "CODBANCOCRED", "CODCONTABILCRED", "CODFILIALDEB", "CODBANCODEB", "CODCONTABILDEB", "CODCOB", "VALOR", "CONCILIACAO", "TIPO", "HISTORICO", "CONTADEBITO", "CONTACREDITO"}, "TIPOCONTA", "CONTACONTABIL"),
+        Table.UnpivotOtherColumns(
+            #"Credito Contabil Adicionada", 
+            {"DATA", "NUMTRANS", "CODFILIALCRED", "CODBANCOCRED", "CODCONTABILCRED", "CODFILIALDEB", "CODBANCODEB", "CODCONTABILDEB", "CODCOB", "VALOR", "CONCILIACAO", "TIPO", "HISTORICO", "CONTADEBITO", "CONTACREDITO"}, 
+            "TIPOCONTA", "CONTACONTABIL"
+        ),
     
     #"Codigo Filial Adicionada" = 
         Table.AddColumn(#"Unpivot Conta Contabil", "CODFILIAL", each 

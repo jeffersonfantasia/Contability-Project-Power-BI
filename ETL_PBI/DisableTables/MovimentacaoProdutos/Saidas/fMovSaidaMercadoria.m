@@ -14,60 +14,38 @@ let
         Table.Group(fMovProdutoSaida, {"DTMOV", "CODFILIAL", "CODFISCAL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VLTOTALNF]), type number}}),
     
     ListCfopFiltro = 
-        List.Combine(
-            {
-                ListCfopSaidaBonificada ,
-                ListCfopSaidaRemessaContaOrdem,
-                ListCfopSaidaDesconsiderar
-            }
-        ),
-    
+        fnListCombine("listCfopSaidaBonificada,listCfopSaidaRemessaContaOrdem,listCfopSaidaDesconsiderar"),
+
     #"ValorPositivo Filtradas" = 
         Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0 and not List.Contains( ListCfopFiltro, [CODFISCAL] ) ),
 
     ListVendaClientes =
-        List.Combine(
-            {
-                ListCfopSaidaVendaNormal,
-                ListCfopSaidaVendaConsignada,
-                ListCfopSaidaFatEntFut,
-                ListCfopSaidaFatContaOrdem,
-                ListCfopSaidaVendaTriangular
-            }
-        ),
+        fnListCombine("listCfopSaidaVendaNormal,listCfopSaidaVendaConsignada,listCfopSaidaFatEntFut,listCfopSaidaFatContaOrdem,listCfopSaidaVendaTriangular"),
 
     ListEstoque = 
-        List.Combine(
-            {
-                ListCfopSaidaDevolucaoConsignado,
-                ListCfopSaidaDevolucao,
-                ListCfopSaidaTransferencia,
-                ListCfopSaidaPerdaMercadoria,
-                ListCfopSaidaRemessaEntFut
-            }
-        ),
+        fnListCombine("listCfopSaidaDevolucaoConsignado,listCfopSaidaDevolucao,listCfopSaidaTransferencia,listCfopSaidaPerdaMercadoria,listCfopSaidaRemessaEntFut"),
 
     #"ContaDebito Adicionada" = 
         Table.AddColumn(#"ValorPositivo Filtradas", "CONTADEBITO", each 
-            if List.Contains( ListVendaClientes, [CODFISCAL] ) then TxtClientes
-            else if List.Contains( ListCfopSaidaDevolucaoConsignado, [CODFISCAL] ) then TxtContabilEstoqueConsignado
-            else if List.Contains( ListCfopSaidaDevolucao, [CODFISCAL] ) then TxtDevolucaoReceber
-            else if List.Contains( ListCfopSaidaTransferencia, [CODFISCAL] ) then TxtContabilTransferencia
-            else if List.Contains( ListCfopSaidaConserto, [CODFISCAL] ) then TxtContabilConsertoPassivo
-            else if List.Contains( ListCfopSaidaDemonstracao, [CODFISCAL] ) then TxtContabilDemonstracaoPassivo
-            else if List.Contains( ListCfopSaidaSimplesRemessa, [CODFISCAL] ) then TxtContabilSimplesRemessaPassivo
-            else if List.Contains( ListCfopSaidaPerdaMercadoria, [CODFISCAL] ) then TxtPerdaMercadoria
-            else if List.Contains( ListCfopSaidaRemessaEntFut, [CODFISCAL] ) then TxtContabilMaterialTransito
+            if List.Contains( ListVendaClientes, [CODFISCAL] ) then fnTextAccount("txtClientes")
+            else if List.Contains( fnListCfop("listCfopSaidaDevolucaoConsignado"), [CODFISCAL] ) then fnTextAccount("txtContabilEstoqueConsignado")
+            else if List.Contains( fnListCfop("listCfopSaidaDevolucao"), [CODFISCAL] ) then fnTextAccount("txtDevolucaoReceber")
+            else if List.Contains( fnListCfop("listCfopSaidaTransferencia"), [CODFISCAL] ) then fnTextAccount("txtContabilTransferencia")
+            else if List.Contains( fnListCfop("listCfopSaidaConserto"), [CODFISCAL] ) then fnTextAccount("txtContabilConsertoPassivo")
+            else if List.Contains( fnListCfop("listCfopSaidaDemonstracao"), [CODFISCAL] ) then fnTextAccount("txtContabilDemonstracaoPassivo")
+            else if List.Contains( fnListCfop("listCfopSaidaSimplesRemessa"), [CODFISCAL] ) then fnTextAccount("txtContabilSimplesRemessaPassivo")
+            else if List.Contains( fnListCfop("listCfopSaidaPerdaMercadoria"), [CODFISCAL] ) then fnTextAccount("txtPerdaMercadoria")
+            else if List.Contains( fnListCfop("listCfopSaidaRemessaEntFut"), [CODFISCAL] ) then fnTextAccount("txtContabilMaterialTransito")
             else null, type text),
     
     #"ContaCredito Adicionada" = 
         Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each 
-            if List.Contains( ListVendaClientes, [CODFISCAL] ) then TxtContabilFaturamento
-            else if List.Contains( ListEstoque, [CODFISCAL] ) then TxtContabilEstoque
-            else if List.Contains( ListCfopSaidaDevolucao, [CODFISCAL] ) then TxtContabilEstoque
-            else if List.Contains( ListCfopSaidaConserto, [CODFISCAL] ) then TxtContabilConsertoAtivo
-            else if List.Contains( ListCfopSaidaDemonstracao, [CODFISCAL] ) then TxtContabilDemonstracaoAtivo
-            else if List.Contains( ListCfopSaidaSimplesRemessa, [CODFISCAL] ) then TxtContabilSimplesRemessaAtivo
+            if List.Contains( ListVendaClientes, [CODFISCAL] ) then fnTextAccount("txtContabilFaturamento")
+            else if List.Contains( ListEstoque, [CODFISCAL] ) then fnTextAccount("txtContabilEstoque")
+            else if List.Contains( fnListCfop("listCfopSaidaDevolucao"), [CODFISCAL] ) then fnTextAccount("txtContabilEstoque")
+            else if List.Contains( fnListCfop("listCfopSaidaConserto"), [CODFISCAL] ) then fnTextAccount("txtContabilConsertoAtivo")
+            else if List.Contains( fnListCfop("listCfopSaidaDemonstracao"), [CODFISCAL] ) then fnTextAccount("txtContabilDemonstracaoAtivo")
+            else if List.Contains( fnListCfop("listCfopSaidaSimplesRemessa"), [CODFISCAL] ) then fnTextAccount("txtContabilSimplesRemessaAtivo")
             else null, type text)
 in
     #"ContaCredito Adicionada"

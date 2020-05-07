@@ -14,25 +14,20 @@ let
         Table.Group(fMovProdutoSaida, {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VLTOTALCOFINS]), type number}}),
 
     #"ValorPositivo Filtradas" = 
-        Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0 and not List.Contains( ListCfopSaidaDesconsiderar, [CODFISCAL] ) ),       
+        Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0 and not List.Contains( fnListCfop("listCfopSaidaDesconsiderar"), [CODFISCAL] ) ),       
 
     ListDevolucao = 
-        List.Combine(
-            {
-                ListCfopSaidaDevolucaoConsignado,
-                ListCfopSaidaDevolucao
-            }
-        ),
+        fnListCombine("listCfopSaidaDevolucaoConsignado,listCfopSaidaDevolucao"),
 
     #"ContaDebito Adicionada" = 
         Table.AddColumn(#"ValorPositivo Filtradas", "CONTADEBITO", each 
-            if List.Contains( ListDevolucao, [CODFISCAL] ) then TxtContabilEstoque
-            else TxtContabilVendaCofins, type text),
+            if List.Contains( ListDevolucao, [CODFISCAL] ) then fnTextAccount("txtContabilEstoque")
+            else fnTextAccount("txtContabilVendaCofins"), type text),
     
     #"ContaCredito Adicionada" = 
         Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each 
-            if List.Contains( ListDevolucao, [CODFISCAL] ) then TxtContabilRecuperarCofins
-            else TxtContabilRecolherCofins, type text)
+            if List.Contains( ListDevolucao, [CODFISCAL] ) then fnTextAccount("txtContabilRecuperarCofins")
+            else fnTextAccount("txtContabilRecolherCofins"), type text)
 
 in
     #"ContaCredito Adicionada"

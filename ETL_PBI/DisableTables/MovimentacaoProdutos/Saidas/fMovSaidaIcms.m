@@ -20,43 +20,27 @@ let
         Table.Group(#"Outras Colunas Removidas", {"DTMOV", "CODFILIAL", "CODFISCAL", "CODOPER", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VALOR]), type number}}),
     
     #"ValorPositivo Filtradas" = 
-        Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0 and not List.Contains( ListCfopSaidaDesconsiderar, [CODFISCAL] ) ),
+        Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0 and not List.Contains( fnListCfop("listCfopSaidaDesconsiderar"), [CODFISCAL] ) ),
 
     ListEstoque = 
-        List.Combine(
-            {
-                ListCfopSaidaDevolucaoConsignado,
-                ListCfopSaidaDevolucao,
-                ListCfopSaidaTransferencia
-            }
-        ),
-    
+        fnListCombine("listCfopSaidaDevolucaoConsignado,listCfopSaidaDevolucao,listCfopSaidaTransferencia"),
+   
     ListMaterialTransito = 
-        List.Combine(
-            {
-                ListCfopSaidaDemonstracao,
-                ListCfopSaidaSimplesRemessa
-            }
-        ),
+        fnListCombine("listCfopSaidaDemonstracao,listCfopSaidaSimplesRemessa"),
         
     ListIcmsRecuperar = 
-        List.Combine(
-            {
-                ListCfopSaidaDevolucaoConsignado,
-                ListCfopSaidaDevolucao
-            }
-        ),
+        fnListCombine("listCfopSaidaDevolucaoConsignado,listCfopSaidaDevolucao"),
 
     #"ContaDebito Adicionada" = 
         Table.AddColumn(#"ValorPositivo Filtradas", "CONTADEBITO", each 
-            if List.Contains( ListEstoque, [CODFISCAL] ) then TxtContabilEstoque
-            else if List.Contains( ListMaterialTransito, [CODFISCAL] ) then TxtContabilMaterialTransito
-            else TxtContabilVendaICMS, type text),
+            if List.Contains( ListEstoque, [CODFISCAL] ) then fnTextAccount("txtContabilEstoque")
+            else if List.Contains( ListMaterialTransito, [CODFISCAL] ) then fnTextAccount("txtContabilMaterialTransito")
+            else fnTextAccount("txtContabilVendaIcms"), type text),
     
     #"ContaCredito Adicionada" = 
         Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each 
-            if List.Contains( ListIcmsRecuperar, [CODFISCAL] ) then TxtContabilRecuperarICMS
-            else TxtContabilRecolherICMS, type text)
+            if List.Contains( ListIcmsRecuperar, [CODFISCAL] ) then fnTextAccount("txtContabilRecuperarIcms")
+            else fnTextAccount("txtContabilRecolherIcms"), type text)
 
 in
     #"ContaCredito Adicionada"

@@ -24,15 +24,15 @@ let
     
     #"ContaDebito Adicionada" = 
         Table.AddColumn(#"ValorPositivo Filtradas" , "CONTADEBITO", each 
-            if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilRecolherICMS
-            else if ( List.Contains( ListCfopEntradaSimplesRemessa , [CODFISCAL] ) and [CODOPER] = "EI" ) then TxtContabilRecuperarICMS
-            else TxtContabilRecuperarICMS, type text),
+            if List.Contains( fnListCfop("listCfopEntradaDevolucao"), [CODFISCAL] ) then fnTextAccount("txtContabilRecolherIcms")
+            else if ( List.Contains( fnListCfop("listCfopEntradaSimplesRemessa") , [CODFISCAL] ) and [CODOPER] = "EI" ) then fnTextAccount("txtContabilRecuperarIcms")
+            else fnTextAccount("txtContabilRecuperarIcms"), type text),
     
     #"ContaCredito Adicionada" = 
         Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each 
-            if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilVendaICMS
-            else if ( List.Contains( ListCfopEntradaSimplesRemessa , [CODFISCAL] ) and [CODOPER] = "EI" ) then TxtContabilEstoqueEntInventario
-            else if List.Contains( ListCfopEntradaTriangular, [CODFISCAL] ) then TxtContabilEstoqueContaOrdem
-            else TxtContabilEstoque, type text)
+            if List.Contains( fnListCfop("listCfopEntradaDevolucao"), [CODFISCAL] ) then fnTextAccount("txtContabilVendaIcms")
+            else if ( List.Contains( fnListCfop("listCfopEntradaSimplesRemessa") , [CODFISCAL] ) and [CODOPER] = "EI" ) then fnTextAccount("txtContabilEstoqueEntInventario")
+            else if List.Contains( fnListCfop("listCfopEntradaTriangular"), [CODFISCAL] ) then fnTextAccount("txtContabilEstoqueContaOrdem")
+            else fnTextAccount("txtContabilEstoque"), type text)
 in
     #"ContaCredito Adicionada"

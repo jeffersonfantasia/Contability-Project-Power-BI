@@ -8,7 +8,7 @@ let
         Table.TransformColumnTypes(fMovProdutoEnt1,{{"DTMOV", type date}}),
         
     fMovProdutoEnt =
-        Table.SelectColumns(fMovProdutoEnt, {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO", "VLTOTALSTFORANF"}),
+        Table.SelectColumns(#"Tipo Alterado", {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO", "VLTOTALSTFORANF"}),
     
     #"Linhas Agrupadas" = 
         Table.Group(fMovProdutoEnt, {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VLTOTALSTFORANF]), type number}}),
@@ -17,9 +17,9 @@ let
         Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0),
 
      #"ContaDebito Adicionada" = 
-        Table.AddColumn(#"ValorPositivo Filtradas", "CONTADEBITO", each TxtContabilEstoque, type text),
+        Table.AddColumn(#"ValorPositivo Filtradas", "CONTADEBITO", each fnTextAccount("txtContabilEstoque"), type text),
     
     #"ContaCredito Adicionada" = 
-        Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each TxtContabilRecolherST, type text)
+        Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each fnTextAccount("txtContabilRecolherST"), type text)
 in
     #"ContaCredito Adicionada"

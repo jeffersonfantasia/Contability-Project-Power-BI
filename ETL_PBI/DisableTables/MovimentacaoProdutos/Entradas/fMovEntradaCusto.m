@@ -8,31 +8,24 @@ let
         Table.TransformColumnTypes(fMovProdutoEnt1,{{"DTMOV", type date}}),
         
     fMovProdutoEnt =
-        Table.SelectColumns(fMovProdutoEnt, {"DTMOV", "CODFILIAL", "CODFISCAL", "CODOPER", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO", "VLTOTALCUSTOCONT"}),
+        Table.SelectColumns(#"Tipo Alterado", {"DTMOV", "CODFILIAL", "CODFISCAL", "CODOPER", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO", "VLTOTALCUSTOCONT"}),
     
     #"Linhas Agrupadas" = 
         Table.Group(fMovProdutoEnt, {"DTMOV", "CODFILIAL", "CODFISCAL", "CODOPER", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VLTOTALCUSTOCONT]), type number}}),
     
     ListCfopFiltro = 
-        List.Combine(
-            {
-                ListCfopEntradaDevolucao ,
-                ListCfopEntradaDemonstracao,
-                ListCfopEntradaConserto,
-                ListCfopEntradaSimplesRemessa
-            }
-        ),
+        fnListCombine("listCfopEntradaDevolucao,listCfopEntradaDemonstracao,listCfopEntradaConserto,listCfopEntradaSimplesRemessa"),
 
     #"ValorPositivo Filtradas" = 
         Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0 and List.Contains( ListCfopFiltro, [CODFISCAL] ) ),
     
     #"ContaDebito Adicionada" = 
-        Table.AddColumn(#"ValorPositivo Filtradas", "CONTADEBITO", each TxtContabilEstoque, type text),
+        Table.AddColumn(#"ValorPositivo Filtradas", "CONTADEBITO", each fnTextAccount("txtContabilEstoque"), type text),
         
     #"ContaCredito Adicionada" = 
         Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each 
-            if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilCMV
-            else if ( List.Contains( ListCfopEntradaSimplesRemessa , [CODFISCAL] ) and [CODOPER] = "EI" ) then TxtContabilEstoqueEntInventario
-            else TxtContabilMaterialTransito, type text)
+            if List.Contains( fnListCfop("listCfopEntradaDevolucao"), [CODFISCAL] ) then fnTextAccount("txtContabilCmv")
+            else if ( List.Contains( fnListCfop("listCfopEntradaSimplesRemessa") , [CODFISCAL] ) and [CODOPER] = "EI" ) then fnTextAccount("txtContabilEstoqueEntInventario")
+            else fnTextAccount("txtContabilMaterialTransito"), type text)
 in
     #"ContaCredito Adicionada"

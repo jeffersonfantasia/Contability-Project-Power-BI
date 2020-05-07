@@ -14,13 +14,13 @@ let
         Table.Group(fMovProdutoSaida, {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VLTOTALST]), type number}}),
 
     #"ValorPositivo Filtradas" = 
-        Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0 and not List.Contains( ListCfopSaidaDesconsiderar, [CODFISCAL] ) ),       
+        Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0 and not List.Contains( fnListCfop("listCfopSaidaDesconsiderar"), [CODFISCAL] ) ),       
 
     #"ContaDebito Adicionada" = 
-        Table.AddColumn(#"ValorPositivo Filtradas", "CONTADEBITO", each TxtContabilVendaST, type text),
+        Table.AddColumn(#"ValorPositivo Filtradas", "CONTADEBITO", each fnTextAccount("txtContabilVendaST"), type text),
     
     #"ContaCredito Adicionada" = 
-        Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each TxtContabilRecolherST, type text)
+        Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each fnTextAccount("txtContabilRecolherST"), type text)
 
 in
     #"ContaCredito Adicionada"

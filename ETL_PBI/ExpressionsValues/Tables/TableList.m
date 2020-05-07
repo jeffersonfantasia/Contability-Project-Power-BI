@@ -18,7 +18,7 @@ let
           {"listCfopEntradaRemessaContaOrdem", {1923,2923} },
           {"listCfopEntradaRemessaEntFut", {1116,1117,2116,2117} },
           {"listCfopEntradaSimplesRemessa", {1908, 1949,2949} },
-          {"listCfopEntradaTransferencia", {1202,1411,2202,2411} },
+          {"listCfopEntradaTransferencia", {1152,1409} },
           {"listCfopEntradaTriangular", {1118,1119,2118,2119} },
           {"listCfopSaidaBonificada", {5910,6910} },
           {"listCfopSaidaConserto", {5915,5916,6915,6916} },

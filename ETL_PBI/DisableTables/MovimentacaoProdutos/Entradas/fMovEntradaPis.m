@@ -18,13 +18,13 @@ let
     
     #"ContaDebito Adicionada" = 
         Table.AddColumn(#"ValorPositivo Filtradas" , "CONTADEBITO", each 
-            if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilRecolherPis
-            else TxtContabilRecuperarPis, type text),
+            if List.Contains( fnListCfop("listCfopEntradaDevolucao"), [CODFISCAL] ) then fnTextAccount("txtContabilRecolherPis")
+            else fnTextAccount("txtContabilRecuperarPis"), type text),
     
     #"ContaCredito Adicionada" = 
         Table.AddColumn(#"ContaDebito Adicionada", "CONTACREDITO", each 
-            if List.Contains( ListCfopEntradaDevolucao, [CODFISCAL] ) then TxtContabilVendaPis
-            else if List.Contains( ListCfopEntradaTriangular, [CODFISCAL] ) then TxtContabilEstoqueContaOrdem
-            else TxtContabilEstoque, type text)
+            if List.Contains( fnListCfop("listCfopEntradaDevolucao"), [CODFISCAL] ) then fnTextAccount("txtContabilVendaPis")
+            else if List.Contains( fnListCfop("listCfopEntradaTriangular"), [CODFISCAL] ) then fnTextAccount("txtContabilEstoqueContaOrdem")
+            else fnTextAccount("txtContabilEstoque"), type text)
 in
     #"ContaCredito Adicionada"

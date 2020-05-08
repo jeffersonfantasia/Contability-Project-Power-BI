@@ -14,7 +14,7 @@ let
         Table.Group(fMovProdutoSaida, {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VLTOTALCUSTOCONT]), type number}}),
     
     ListCfopFiltro = 
-        fnListCombine("listCfopSaidaTransferencia,listCfopSaidaDevolucao,listCfopSaidaDevolucaoConsignado,listCfopSaidaPerdaMercadoria,listCfopSaidaRemessaEntFut"),
+        fnListCombine("listCfopSaidaTransferencia,listCfopSaidaDevolucao,listCfopSaidaDevolucaoConsignado,listCfopSaidaPerdaMercadoria,listCfopSaidaRemessaEntFut,listCfopSaidaDesconsiderar"),
     
     #"ValorPositivo Filtradas" = 
         Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0 and not List.Contains( ListCfopFiltro, [CODFISCAL] ) ),
@@ -41,4 +41,4 @@ let
             else if List.Contains( fnListCfop("listCfopSaidaVendaTriangular"), [CODFISCAL] ) then fnTextAccount("txtContabilEstoqueContaOrdem")
             else fnTextAccount("txtContabilEstoque"), type text)
 in
-    #"ContaCredito Adicionada"
+    #"ContaCredito Adicionada"  

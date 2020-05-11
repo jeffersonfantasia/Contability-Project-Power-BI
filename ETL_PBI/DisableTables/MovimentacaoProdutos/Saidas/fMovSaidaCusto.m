@@ -14,7 +14,7 @@ let
         Table.Group(fMovProdutoSaida, {"DTMOV", "CODFILIAL", "CODFISCAL", "TIPOCONTABIL", "CODIGO", "CLIENTE_FORNECEDOR", "NUMTRANSACAO"}, {{"VALOR", each List.Sum([VLTOTALCUSTOCONT]), type number}}),
     
     ListCfopFiltro = 
-        fnListCombine("listCfopSaidaTransferencia,listCfopSaidaDevolucao,listCfopSaidaDevolucaoConsignado,listCfopSaidaPerdaMercadoria,listCfopSaidaRemessaEntFut,listCfopSaidaDesconsiderar"),
+        fnListCombine("listCfopSaidaTransferencia,listCfopSaidaDevolucao,listCfopSaidaDevolucaoConsignado,listCfopSaidaPerdaMercadoria,listCfopSaidaDesconsiderar"),
     
     #"ValorPositivo Filtradas" = 
         Table.SelectRows(#"Linhas Agrupadas", each [VALOR] > 0 and not List.Contains( ListCfopFiltro, [CODFISCAL] ) ),
@@ -23,7 +23,7 @@ let
         fnListCombine("listCfopSaidaVendaNormal,listCfopSaidaVendaConsignada,listCfopSaidaFatEntFut,listCfopSaidaFatContaOrdem,listCfopSaidaVendaTriangular"),
  
     ListMaterialTransitoDebito = 
-        fnListCombine("listCfopSaidaConserto,listCfopSaidaDemonstracao,listCfopSaidaSimplesRemessa,listCfopSaidaRemessaContaOrdem"),
+        fnListCombine("listCfopSaidaConserto,listCfopSaidaDemonstracao,listCfopSaidaSimplesRemessa,listCfopSaidaRemessaEntFut,listCfopSaidaRemessaContaOrdem"),
 
     ListMaterialTransitoCredito = 
         fnListCombine("listCfopSaidaFatEntFut,listCfopSaidaFatContaOrdem"),
@@ -41,4 +41,4 @@ let
             else if List.Contains( fnListCfop("listCfopSaidaVendaTriangular"), [CODFISCAL] ) then fnTextAccount("txtContabilEstoqueContaOrdem")
             else fnTextAccount("txtContabilEstoque"), type text)
 in
-    #"ContaCredito Adicionada"  
+    #"ContaCredito Adicionada"

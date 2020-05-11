@@ -5,6 +5,7 @@ let
       {
         {"1", "1"},
         {"2", "1"},
+        {"3", "1"},
         {"7", "1"},
         {"99", "1"},
         {"5", "5"},
@@ -12,4 +13,4 @@ let
       }
     ) 
 in
-    List.ReplaceMatchingItems( {ColumnName}, Lista )
+  List.ReplaceMatchingItems( {ColumnName}, Lista )

@@ -17,14 +17,12 @@ SELECT M.DTMOV,
          ELSE
           M.CUSTOCONT
        END) AS CUSTOCONT, --PARA TERMOS O CUSTO CONTABIL UTILIZADO NA NOTA MAE
-       ROUND(NVL(M.QTCONT, 0) * NVL((CASE
-                                      WHEN M.CODFISCAL IN (5923, 6923, 5117, 6117) THEN
-                                       T.CUSTOCONT_TV7
-                                      ELSE
-                                       M.CUSTOCONT
-                                    END),
-                                    0),
-             2) AS VLTOTALCUSTOCONT, --CUSTO CONTABIL
+       (CASE
+         WHEN M.CODFISCAL IN (5923, 6923, 5117, 6117) THEN
+          NVL(M.QTCONT, 0) * NVL(T.CUSTOCONT_TV7, 0)
+         ELSE
+          ROUND(NVL(M.QTCONT, 0) * NVL(M.CUSTOCONT, 0), 2)
+       END) AS VLTOTALCUSTOCONT, --CUSTO CONTABIL
        ROUND(M.QTCONT * M.PUNITCONT, 2) AS VLTOTALPROD, --VALOR PRODUTO
        --SE FOR DEVOLUCAO M.QTCONT * (M.PUNITCONT + M.VLDESCONTO - M.ST - M.VLIPI - M.VLFRETE)
        --SENAO  M.QTCONT * (M.PUNITCONT + M.VLDESCONTO - M.ST - M.VLIPI)

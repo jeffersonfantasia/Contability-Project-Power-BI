@@ -60,9 +60,14 @@ let
                 then [CODCONTAB_CONTA]
                 else [CODCONTABILBANCO]
 
+            else if [TIPO] = "C" then 
+                if [VPAGO] > 0 
+                then [CODCONTAB_CONTA]
+                else [CODCONTAB_FORNEC]   
+
             else if [TIPO] = "V" then [CODCONTABILBANCO]
             
-            else if List.Contains( {"D","MK","C"}, [TIPO])
+            else if List.Contains( {"D","MK"}, [TIPO])
                 then [CODCONTAB_FORNEC]
             
             else if List.Contains( {"EC","A"}, [TIPO])
@@ -83,7 +88,10 @@ let
         
             else if [TIPO] = "MI" then [CODCONTAB_FORNEC]
 
-            else if [TIPO] = "C" then [CODCONTAB_CONTA]
+            else if [TIPO] = "C" then 
+                if [VPAGO] > 0 
+                then [CODCONTABILBANCO]
+                else [CODCONTAB_CONTA] 
 
             else if [TIPO] = "EC" then fnTextAccount("txtEmprestimoTerceiros")
 

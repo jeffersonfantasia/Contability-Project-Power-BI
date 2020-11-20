@@ -6,16 +6,16 @@ let
     
     #"Conta Debito Adicionada" = 
         Table.AddColumn(fMovBancosTransferencia1, "CONTADEBITO", each 
-            if List.Contains( {"G"}, [TIPO] ) 
+            if List.Contains( {"EC", "G"}, [TIPO] ) 
             then [CODCONTABILDEB] 
-            else if List.Contains( {"EC", "EB"}, [TIPO] )  then fnTextAccount("txtEmprestimoTerceiros") 
+            else if List.Contains( {"EB"}, [TIPO] )  then fnTextAccount("txtEmprestimoTerceiros") 
             else null, type text), 
 
     #"Conta Credito Adicionada" = 
         Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", each 
             if List.Contains( {"G", "EB"}, [TIPO] ) 
             then [CODCONTABILCRED]
-            else if List.Contains( {"EC"}, [TIPO] )  then [CODCONTABILDEB]
+            else if List.Contains( {"EC"}, [TIPO] )  then fnTextAccount("txtEmprestimoTerceiros") 
             else null, type text),
 
     #"Debito Contabil Adicionada" = 

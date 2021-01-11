@@ -17,7 +17,8 @@ let
             else if [TIPO] = "P" then fnTextAccount("txtPrejuizosClientes") 
             else if [TIPO] = "T" then fnTextAccount("txtTaxasCartao") 
             else if [TIPO] = "D" then fnTextAccount("txtDescontosConcedidos")
-            else if [TIPO] = "E" then [CODCONTAB] 
+            else if [TIPO] = "E" then [CODCONTAB]
+            else if [TIPO] = "EJ" then fnTextAccount("txtJurosRecebidos") 
             else null, type text),
     
     #"Conta Credito Adicionada" = 
@@ -27,8 +28,8 @@ let
                 then fnTextAccount("txtJurosRecebidos") 
                 else [CODCONTAB] 
             else if [TIPO] = "J" then fnTextAccount("txtJurosRecebidos") 
-            else if List.Contains( {"P","T","D"},[TIPO] ) then [CODCONTAB] 
-            else if [TIPO] = "E" then [CODCONTABILBANCO]
+            else if List.Contains( {"P","T","D"}, [TIPO] ) then [CODCONTAB] 
+            else if List.Contains( {"E","EJ"}, [TIPO] ) then [CODCONTABILBANCO]
             else null, type text),
     
     #"Outras Colunas Removidas" = 

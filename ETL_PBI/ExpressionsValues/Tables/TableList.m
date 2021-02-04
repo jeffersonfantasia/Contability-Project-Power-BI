@@ -2,8 +2,8 @@ let
   Fonte = #table(
         type table [Name = text, Value = list ],
         {
-          {"listContasConsiderar", {100003,515106,515107,515112,515113} },
-          {"listContasDesconsiderar", {410105,530106,545102} }, //CASO HAJA NOVA INSERÇÃO, ALTERAR TAMBÉM NA VIEW_JC_LANC_PAGOS
+          {"listContasConsiderar", {515106,515107,515112,515113} },
+          {"listContasDesconsiderar", {100003,410105,530106,545102} }, //CASO HAJA NOVA INSERÇÃO, ALTERAR TAMBÉM NA VIEW_JC_LANC_PAGOS
           {"listEmpresaJCBrothers", {"1","2","7"} },
           {"listGruposCompensacao", {610,620,650} },
           {"listGruposDesconsiderar", {140,300,510,515,610,620,650,670,810,820} },

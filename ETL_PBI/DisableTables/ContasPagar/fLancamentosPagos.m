@@ -77,7 +77,12 @@ let
     
     #"Conta Credito Adicionada" = 
         Table.AddColumn(#"Conta Debito Adicionada", "CONTACREDITO", each 
-            if List.Contains( {"F", "O", "MT"}, [TIPO]) then 
+            if List.Contains( {"F"}, [TIPO]) then 
+                if [VPAGO] > 0
+                then [CODCONTABILBANCO]
+                else [CODCONTAB_CONTA] 
+
+            else if List.Contains( {"O", "MT"}, [TIPO]) then 
                 if [VPAGO] > 0
                 then [CODCONTABILBANCO]
                 else if [CODCONTAB_CONTA] = "" 
@@ -125,6 +130,8 @@ let
     #"Outras Colunas Removidas" = 
         Table.SelectColumns(#"Data Adicionada",{"CODFILIAL", "RECNUM", "DATA", "VALOR", "CODCONTA", "CODFORNEC", "NUMTRANS", "TIPOPARCEIRO", "TIPO", "HISTORICO", "CONTADEBITO", "CONTACREDITO"}),
     
-    #"Tipo Alterado" = Table.TransformColumnTypes(#"Outras Colunas Removidas",{{"DATA", type date}})
+    Filtro_ValorDifZero = Table.SelectRows(#"Outras Colunas Removidas", each ([VALOR] <> 0)),
+    
+    #"Tipo Alterado" = Table.TransformColumnTypes(Filtro_ValorDifZero,{{"DATA", type date}})
 in
     #"Tipo Alterado"

@@ -80,7 +80,7 @@ let
             if List.Contains( {"F"}, [TIPO]) then 
                 if [VPAGO] > 0
                 then [CODCONTABILBANCO]
-                else [CODCONTAB_CONTA] 
+                else [CODCONTAB_FORNEC] 
 
             else if List.Contains( {"O", "MT"}, [TIPO]) then 
                 if [VPAGO] > 0
